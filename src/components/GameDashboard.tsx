@@ -25,15 +25,31 @@ interface GameDashboardProps {
 export const GameDashboard: React.FC<GameDashboardProps> = ({ user }) => {
   const [hasValidRegistration, setHasValidRegistration] = useState(false);
   const [isCheckingRegistration, setIsCheckingRegistration] = useState(true);
+  const [showBonusNotification, setShowBonusNotification] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   // Verificar se o usuário passou pelo fluxo correto de cadastro
   useEffect(() => {
     const validRegistration = localStorage.getItem('raspadinha_valid_registration');
     const hasUser = localStorage.getItem('raspadinha_user_data');
     const hasGameState = localStorage.getItem('raspadinha_game_state');
+    const hasRegistrationBonus = localStorage.getItem('raspadinha_registration_bonus');
 
     if (validRegistration === 'true' && hasUser && hasGameState) {
       setHasValidRegistration(true);
+
+      // Mostrar notificação de bônus se for novo cadastro
+      if (hasRegistrationBonus === 'true') {
+        setTimeout(() => {
+          setShowBonusNotification(true);
+          // Remover flag do localStorage
+          localStorage.removeItem('raspadinha_registration_bonus');
+          // Esconder após 4 segundos
+          setTimeout(() => {
+            setShowBonusNotification(false);
+          }, 4000);
+        }, 800);
+      }
     } else {
       // Se não tem registro válido, limpar tudo e redirecionar
       localStorage.removeItem('raspadinha_user_data');
@@ -64,6 +80,46 @@ export const GameDashboard: React.FC<GameDashboardProps> = ({ user }) => {
       setShowWinningScreen(true);
     }
   }, [gameState.hasWonIphone]);
+
+  // Precarregar imagens
+  useEffect(() => {
+    const imagesToLoad = [
+      '/1752250181.webp',
+      '/Airpods-Transparent-Images-PNG.png',
+      '/Apple-iPhone-15-Pro-Max-Blue-Titanium-frontimage.webp',
+      '/Apple-Watch-PNG-High-Quality-Image.png',
+      '/iphone_11_PNG20.png',
+      '/iphone_13_PNG31.png',
+      '/pngimg.com - iphone_14_PNG41.png'
+    ];
+
+    let loadedCount = 0;
+    const totalImages = imagesToLoad.length;
+
+    imagesToLoad.forEach((src) => {
+      const img = new Image();
+      img.onload = () => {
+        loadedCount++;
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true);
+        }
+      };
+      img.onerror = () => {
+        loadedCount++;
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true);
+        }
+      };
+      img.src = src;
+    });
+
+    // Timeout de segurança
+    const timeout = setTimeout(() => {
+      setImagesLoaded(true);
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, []);
 
   const canPlay = gameState.balance >= CARD_COST;
   const missingAmount = canPlay ? 0 : CARD_COST - gameState.balance;
@@ -150,13 +206,18 @@ export const GameDashboard: React.FC<GameDashboardProps> = ({ user }) => {
     return <ScratchCard card={currentCard} onComplete={handleCardComplete} />;
   }
 
-  // Se está verificando registro, mostrar loading
-  if (isCheckingRegistration) {
+  // Se está verificando registro ou carregando imagens, mostrar loading
+  if (isCheckingRegistration || !imagesLoaded) {
     return (
       <div className="min-h-screen bg-primary flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white font-bold">Verificando cadastro...</p>
+          <p className="text-white font-bold text-lg">
+            {isCheckingRegistration ? 'Verificando cadastro...' : 'Carregando prêmios...'}
+          </p>
+          {!isCheckingRegistration && (
+            <p className="text-white/60 text-sm mt-2">Preparando sua experiência</p>
+          )}
         </div>
       </div>
     );
@@ -186,7 +247,29 @@ export const GameDashboard: React.FC<GameDashboardProps> = ({ user }) => {
 
   return (
     <div className="min-h-screen bg-primary safe-area-top safe-area-bottom">
-      
+      {/* Notificação de Bônus */}
+      {showBonusNotification && (
+        <div className="fixed top-4 left-4 right-4 z-50 animate-slide-in-down">
+          <div className="bg-gradient-to-r from-accent to-accent-hover rounded-2xl p-4 shadow-2xl border border-white/20 max-w-md mx-auto">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Gift className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="text-white font-bold text-sm">Bônus Creditado!</p>
+                <p className="text-white/90 text-xs">R$ 14,70 + 3 raspadinhas</p>
+              </div>
+              <button
+                onClick={() => setShowBonusNotification(false)}
+                className="text-white/80 hover:text-white transition-colors"
+              >
+                <span className="text-xl">×</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header com informações do usuário */}
       <div className="bg-gray-900 backdrop-blur-xl p-4 border-b border-gray-800">
         <div className="flex items-center justify-between">
