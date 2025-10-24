@@ -26,7 +26,6 @@ export const GameDashboard: React.FC<GameDashboardProps> = ({ user }) => {
   const [hasValidRegistration, setHasValidRegistration] = useState(false);
   const [isCheckingRegistration, setIsCheckingRegistration] = useState(true);
   const [showBonusNotification, setShowBonusNotification] = useState(false);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   // Verificar se o usuário passou pelo fluxo correto de cadastro
   useEffect(() => {
@@ -80,46 +79,6 @@ export const GameDashboard: React.FC<GameDashboardProps> = ({ user }) => {
       setShowWinningScreen(true);
     }
   }, [gameState.hasWonIphone]);
-
-  // Precarregar imagens
-  useEffect(() => {
-    const imagesToLoad = [
-      '/1752250181.webp',
-      '/Airpods-Transparent-Images-PNG.png',
-      '/Apple-iPhone-15-Pro-Max-Blue-Titanium-frontimage.webp',
-      '/Apple-Watch-PNG-High-Quality-Image.png',
-      '/iphone_11_PNG20.png',
-      '/iphone_13_PNG31.png',
-      '/pngimg.com - iphone_14_PNG41.png'
-    ];
-
-    let loadedCount = 0;
-    const totalImages = imagesToLoad.length;
-
-    imagesToLoad.forEach((src) => {
-      const img = new Image();
-      img.onload = () => {
-        loadedCount++;
-        if (loadedCount === totalImages) {
-          setImagesLoaded(true);
-        }
-      };
-      img.onerror = () => {
-        loadedCount++;
-        if (loadedCount === totalImages) {
-          setImagesLoaded(true);
-        }
-      };
-      img.src = src;
-    });
-
-    // Timeout de segurança
-    const timeout = setTimeout(() => {
-      setImagesLoaded(true);
-    }, 3000);
-
-    return () => clearTimeout(timeout);
-  }, []);
 
   const canPlay = gameState.balance >= CARD_COST;
   const missingAmount = canPlay ? 0 : CARD_COST - gameState.balance;
@@ -206,18 +165,13 @@ export const GameDashboard: React.FC<GameDashboardProps> = ({ user }) => {
     return <ScratchCard card={currentCard} onComplete={handleCardComplete} />;
   }
 
-  // Se está verificando registro ou carregando imagens, mostrar loading
-  if (isCheckingRegistration || !imagesLoaded) {
+  // Se está verificando registro, mostrar loading
+  if (isCheckingRegistration) {
     return (
       <div className="min-h-screen bg-primary flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white font-bold text-lg">
-            {isCheckingRegistration ? 'Verificando cadastro...' : 'Carregando prêmios...'}
-          </p>
-          {!isCheckingRegistration && (
-            <p className="text-white/60 text-sm mt-2">Preparando sua experiência</p>
-          )}
+          <p className="text-white font-bold">Verificando cadastro...</p>
         </div>
       </div>
     );
