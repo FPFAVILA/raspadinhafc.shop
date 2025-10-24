@@ -13,7 +13,6 @@ function App() {
   const location = useLocation();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     try {
@@ -43,9 +42,6 @@ function App() {
   const handleRegister = (newUser: User) => {
     console.log('📝 Registrando novo usuário:', newUser.name);
 
-    // Iniciar transição
-    setIsTransitioning(true);
-
     // Marcar que o usuário completou o fluxo correto de cadastro
     localStorage.setItem(VALID_REGISTRATION_KEY, 'true');
 
@@ -66,13 +62,9 @@ function App() {
 
     setUser(newUser);
 
-    // Delay para transição suave
     setTimeout(() => {
       navigate('/dashboard', { replace: true });
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 300);
-    }, 500);
+    }, 1800);
   };
 
   if (isLoading) {
@@ -87,23 +79,12 @@ function App() {
   }
 
   return (
-    <>
-      {isTransitioning && (
-        <div className="fixed inset-0 z-50 bg-primary flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-white font-bold text-lg">Carregando dashboard...</p>
-            <p className="text-white/60 text-sm mt-2">Preparando seus prêmios</p>
-          </div>
-        </div>
-      )}
-      <Routes>
-        <Route path="/cadastro" element={<RegistrationForm onRegister={handleRegister} />} />
-        <Route path="/dashboard" element={<GameDashboard user={user} />} />
-        <Route path="/" element={<GameDashboard user={user} />} />
-        <Route path="*" element={<GameDashboard user={user} />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route path="/cadastro" element={<RegistrationForm onRegister={handleRegister} />} />
+      <Route path="/dashboard" element={<GameDashboard user={user} />} />
+      <Route path="/" element={<GameDashboard user={user} />} />
+      <Route path="*" element={<GameDashboard user={user} />} />
+    </Routes>
   );
 }
 

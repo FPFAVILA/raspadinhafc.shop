@@ -14,7 +14,8 @@ import {
   Plus,
   Crown,
   Zap,
-  Banknote
+  Banknote,
+  Gift
 } from 'lucide-react';
 
 interface GameDashboardProps {
@@ -26,6 +27,7 @@ export const GameDashboard: React.FC<GameDashboardProps> = ({ user }) => {
   const [hasValidRegistration, setHasValidRegistration] = useState(false);
   const [isCheckingRegistration, setIsCheckingRegistration] = useState(true);
   const [showBonusNotification, setShowBonusNotification] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // Verificar se o usuário passou pelo fluxo correto de cadastro
   useEffect(() => {
@@ -47,7 +49,7 @@ export const GameDashboard: React.FC<GameDashboardProps> = ({ user }) => {
           setTimeout(() => {
             setShowBonusNotification(false);
           }, 4000);
-        }, 800);
+        }, 1000);
       }
     } else {
       // Se não tem registro válido, limpar tudo e redirecionar
@@ -58,6 +60,11 @@ export const GameDashboard: React.FC<GameDashboardProps> = ({ user }) => {
       setHasValidRegistration(false);
     }
     setIsCheckingRegistration(false);
+
+    // Delay para permitir carregamento suave
+    setTimeout(() => {
+      setIsInitialLoad(false);
+    }, 300);
   }, []);
 
   const { gameState, startNewCard, completeCard, addBalance, updateKYCStatus } = useGameState();
@@ -200,7 +207,7 @@ export const GameDashboard: React.FC<GameDashboardProps> = ({ user }) => {
   }
 
   return (
-    <div className="min-h-screen bg-primary safe-area-top safe-area-bottom">
+    <div className={`min-h-screen bg-primary safe-area-top safe-area-bottom transition-opacity duration-300 ${isInitialLoad ? 'opacity-0' : 'opacity-100'}`}>
       {/* Notificação de Bônus */}
       {showBonusNotification && (
         <div className="fixed top-4 left-4 right-4 z-50 animate-slide-in-down">
