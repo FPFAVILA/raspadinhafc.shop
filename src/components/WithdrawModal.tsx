@@ -7,6 +7,7 @@ interface WithdrawModalProps {
   onClose: () => void;
   onWithdraw: (amount: number) => void;
   balance: number;
+  realBalance: number;
   kycStatus?: KYCStatus;
   onOpenKYC?: () => void;
 }
@@ -23,6 +24,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
   onClose,
   onWithdraw,
   balance,
+  realBalance,
   kycStatus,
   onOpenKYC
 }) => {
@@ -37,7 +39,8 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
   const [showSuccess, setShowSuccess] = useState(false);
 
   const minWithdraw = 40;
-  const maxWithdraw = balance;
+  const maxWithdraw = realBalance;
+  const bonusBalance = balance - realBalance;
 
   if (!isOpen) return null;
 
@@ -58,8 +61,8 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
 
     if (!formData.amount) newErrors.amount = 'Valor é obrigatório';
     if (amount < minWithdraw) newErrors.amount = `Valor mínimo R$ ${minWithdraw.toFixed(2).replace('.', ',')}`;
-    if (amount > maxWithdraw) newErrors.amount = `Valor máximo R$ ${maxWithdraw.toFixed(2).replace('.', ',')}`;
-    
+    if (amount > maxWithdraw) newErrors.amount = `Saldo real insuficiente. Disponível: R$ ${maxWithdraw.toFixed(2).replace('.', ',')}`;
+
     if (!formData.fullName.trim()) newErrors.fullName = 'Nome completo é obrigatório';
     if (!formData.pixKey.trim()) newErrors.pixKey = 'Chave PIX é obrigatória';
 
@@ -193,7 +196,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
               </div>
               <div>
                 <h2 className="text-lg font-bold text-white">Sacar Saldo</h2>
-                <p className="text-white/80 text-sm">R$ {balance.toFixed(2).replace('.', ',')} disponível</p>
+                <p className="text-white/80 text-sm">R$ {realBalance.toFixed(2).replace('.', ',')} disponível</p>
               </div>
             </div>
             <button
@@ -227,16 +230,32 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
             </div>
           )}
 
+          {/* Aviso de saldo bônus */}
+          {!needsKYCVerification && bonusBalance > 0 && (
+            <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-4 mb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <AlertTriangle className="w-5 h-5 text-yellow-600" />
+                <span className="text-yellow-800 font-bold text-sm">Saldo Bônus Não Sacável</span>
+              </div>
+              <p className="text-yellow-700 text-sm mb-2">
+                Você possui R$ {bonusBalance.toFixed(2).replace('.', ',')} em bônus que não podem ser sacados.
+              </p>
+              <p className="text-yellow-700 text-sm font-medium">
+                Apenas saldo depositado pode ser sacado: <span className="font-bold">R$ {realBalance.toFixed(2).replace('.', ',')}</span>
+              </p>
+            </div>
+          )}
+
           {/* Aviso se saldo insuficiente */}
-          {!needsKYCVerification && balance < minWithdraw && (
+          {!needsKYCVerification && realBalance < minWithdraw && (
             <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-4">
               <div className="flex items-center gap-2 mb-2">
                 <AlertTriangle className="w-5 h-5 text-red-600" />
-                <span className="text-red-800 font-bold text-sm">Saldo Insuficiente</span>
+                <span className="text-red-800 font-bold text-sm">Saldo Real Insuficiente</span>
               </div>
               <p className="text-red-700 text-sm">
-                Você precisa de pelo menos R$ 40,00 para sacar.
-                Faltam R$ {(minWithdraw - balance).toFixed(2).replace('.', ',')}
+                Você precisa de pelo menos R$ 40,00 em saldo real para sacar.
+                {realBalance > 0 && <span> Faltam R$ {(minWithdraw - realBalance).toFixed(2).replace('.', ',')}</span>}
               </p>
             </div>
           )}
@@ -271,7 +290,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
               
               {/* Valores sugeridos */}
               <div className="grid grid-cols-3 gap-2 mt-3">
-                {[40, Math.min(100, balance), balance].filter((val, index, arr) => val >= 40 && arr.indexOf(val) === index).map((value) => (
+                {[40, Math.min(100, realBalance), realBalance].filter((val, index, arr) => val >= 40 && arr.indexOf(val) === index).map((value) => (
                   <button
                     key={value}
                     type="button"
@@ -282,7 +301,7 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
                     <div className="text-base font-bold text-emerald-700">
                       R$ {value.toFixed(2).replace('.', ',')}
                     </div>
-                    {value === balance && (
+                    {value === realBalance && (
                       <div className="text-xs text-emerald-600 mt-1">Saldo total</div>
                     )}
                   </button>
@@ -344,9 +363,9 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
             {/* Botão de Saque */}
             <button
               type="submit"
-              disabled={isSubmitting || balance < minWithdraw}
+              disabled={isSubmitting || realBalance < minWithdraw}
               className={`w-full font-bold py-4 rounded-2xl transition-all duration-300 active:scale-95 shadow-modern text-lg ${
-                balance < minWithdraw
+                realBalance < minWithdraw
                   ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
                   : isSubmitting
                   ? 'bg-emerald-400 text-white cursor-not-allowed'
@@ -359,10 +378,10 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   <span>Processando Saque...</span>
                 </div>
-              ) : balance < minWithdraw ? (
+              ) : realBalance < minWithdraw ? (
                 <div className="flex items-center justify-center gap-3">
                   <AlertTriangle className="w-5 h-5" />
-                  <span>Saldo Insuficiente (Mín. R$ 40,00)</span>
+                  <span>Saldo Real Insuficiente</span>
                 </div>
               ) : (
                 <div className="flex items-center justify-center gap-3">

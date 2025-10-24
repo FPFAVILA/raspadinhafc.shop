@@ -7,6 +7,8 @@ export interface User {
 
 export interface GameState {
   balance: number;
+  realBalance: number;
+  bonusBalance: number;
   scratchCardsUsed: number;
   hasWonIphone: boolean;
   kycStatus?: KYCStatus;

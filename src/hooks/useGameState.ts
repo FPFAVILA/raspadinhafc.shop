@@ -103,6 +103,8 @@ const generateLosingCard = (): ScratchCard => {
 export const useGameState = () => {
   const [gameState, setGameState] = useState<GameState>({
     balance: 0,
+    realBalance: 0,
+    bonusBalance: 0,
     scratchCardsUsed: 0,
     hasWonIphone: false,
     kycStatus: {
@@ -118,6 +120,10 @@ export const useGameState = () => {
     const saved = localStorage.getItem(GAME_STATE_KEY);
     if (saved) {
       const parsedState = JSON.parse(saved);
+      if (!parsedState.realBalance && !parsedState.bonusBalance) {
+        parsedState.realBalance = 0;
+        parsedState.bonusBalance = parsedState.balance || 0;
+      }
       console.log('📊 Estado carregado:', parsedState);
       setGameState(parsedState);
       setIsNewUser(false);
@@ -181,7 +187,9 @@ export const useGameState = () => {
       newState.hasWonIphone = true;
     } else if (card.prizeAmount && card.prizeAmount > 0) {
       console.log('💰 Ganhou R$', card.prizeAmount);
+      const newBonusBalance = parseFloat((gameState.bonusBalance + card.prizeAmount).toFixed(2));
       newState.balance = parseFloat((gameState.balance + card.prizeAmount).toFixed(2));
+      newState.bonusBalance = newBonusBalance;
     }
 
     console.log('Novo estado:', newState);
@@ -191,9 +199,11 @@ export const useGameState = () => {
   const addBalance = useCallback((amount: number) => {
     console.log('💵 Adicionando R$', amount);
     const newBalance = parseFloat((gameState.balance + amount).toFixed(2));
+    const newRealBalance = parseFloat((gameState.realBalance + amount).toFixed(2));
     const newState: GameState = {
       ...gameState,
-      balance: newBalance
+      balance: newBalance,
+      realBalance: newRealBalance
     };
 
     if (newState.kycStatus && !newState.kycStatus.depositVerified && amount > 0) {
@@ -206,6 +216,7 @@ export const useGameState = () => {
     }
 
     console.log('Novo saldo:', newBalance);
+    console.log('Saldo real:', newRealBalance);
     saveGameState(newState);
   }, [gameState, saveGameState]);
 
