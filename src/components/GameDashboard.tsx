@@ -335,7 +335,6 @@ export const GameDashboard: React.FC<GameDashboardProps> = ({ user }) => {
         onClose={() => setShowWithdrawModal(false)}
         onWithdraw={handleWithdraw}
         balance={gameState.balance}
-        realBalance={gameState.realBalance}
         kycStatus={gameState.kycStatus}
         onOpenKYC={handleOpenKYC}
       />
