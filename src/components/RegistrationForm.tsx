@@ -31,7 +31,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -146,12 +145,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
     });
 
     setTimeout(() => {
-      setIsRedirecting(true);
-    }, 1500);
-
-    setTimeout(() => {
       onRegister(user);
-    }, 2000);
+    }, 1800);
 
     setIsSubmitting(false);
   };
@@ -170,21 +165,17 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm rounded-3xl mx-2 sm:mx-0">
             <div className="bg-gradient-to-br from-accent to-accent-hover rounded-2xl p-5 sm:p-6 text-center animate-scale-in border border-white/30 shadow-2xl max-w-xs mx-4">
               <CheckCircle className="w-14 h-14 sm:w-16 sm:h-16 text-white mx-auto mb-3 animate-bounce" />
-              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Sucesso!</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Cadastro realizado!</h2>
 
-              <div className="bg-white/20 rounded-lg p-2.5 sm:p-3 mb-2">
-                <div className="text-white/80 text-xs mb-0.5">Bônus inicial</div>
+              <div className="bg-white/20 rounded-lg p-2.5 sm:p-3 mb-3">
+                <div className="text-white/80 text-xs mb-0.5">Seu bônus</div>
                 <div className="text-2xl sm:text-3xl font-bold text-white">R$ 14,70</div>
               </div>
 
-              {!isRedirecting ? (
-                <p className="text-white/80 text-xs flex items-center justify-center gap-2">
-                  <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Processando...
-                </p>
-              ) : (
-                <p className="text-white/80 text-xs">Preparando sua conta...</p>
-              )}
+              <p className="text-white/80 text-xs flex items-center justify-center gap-2">
+                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Preparando sua conta...
+              </p>
             </div>
           </div>
         )}
