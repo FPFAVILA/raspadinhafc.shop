@@ -179,24 +179,29 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
         )}
 
         <div className={`bg-gray-900/95 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-gray-800 ${showSuccess ? 'opacity-20' : ''} transition-opacity duration-500`}>
-          <div className="relative bg-gradient-to-br from-accent via-accent to-accent-hover p-5 sm:p-6 md:p-8 overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse" style={{ animationDuration: '3s' }} />
+          <div className="bg-gradient-to-br from-accent via-accent to-accent-hover p-4 text-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse" style={{ animationDuration: '3s' }} />
 
-            <div className="relative flex flex-col gap-3 sm:gap-4">
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border-2 border-white/30 flex-shrink-0 shadow-lg transform hover:scale-105 transition-transform duration-300">
-                  <Crown className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-lg" />
-                </div>
-                <div className="text-left flex-1 min-w-0">
-                  <h1 className="text-xl sm:text-2xl font-bold text-white drop-shadow-lg">RaspadinhaPRO</h1>
-                  <p className="text-white/90 text-sm sm:text-base font-medium">Prêmios Reais</p>
-                </div>
+            <div className="relative">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl mb-2 shadow-2xl border-2 border-white/30">
+                <Crown className="w-7 h-7 text-white animate-pulse" />
               </div>
 
-              <div className="flex items-center justify-center gap-2 sm:gap-2.5 bg-white/20 backdrop-blur-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl border-2 border-white/30 shadow-lg hover:bg-white/25 transition-colors duration-300">
-                <Gift className="w-5 h-5 sm:w-6 sm:h-6 text-white drop-shadow-lg flex-shrink-0" />
-                <div className="text-xl sm:text-2xl font-bold text-white whitespace-nowrap drop-shadow-lg">R$ 14,70</div>
+              <h1 className="text-2xl font-bold text-white mb-3 drop-shadow-2xl">
+                Raspadinha<span className="text-yellow-300">PRO</span>
+              </h1>
+
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3 border-2 border-white/30 shadow-2xl">
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <Gift className="w-5 h-5 text-yellow-300 animate-bounce" />
+                  <span className="text-white font-bold text-sm drop-shadow-lg">BÔNUS EXCLUSIVO</span>
+                </div>
+                <div className="text-3xl font-bold text-white mb-1 drop-shadow-2xl">
+                  R$ 14,70
+                </div>
+                <div className="text-white/90 text-sm font-medium drop-shadow-lg">
+                  + 3 Raspadinhas Grátis
+                </div>
               </div>
             </div>
           </div>
