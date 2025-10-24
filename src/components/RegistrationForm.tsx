@@ -31,6 +31,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -128,7 +129,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
 
     setIsSubmitting(true);
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
     const user: User = {
       id: `user_${Date.now()}`,
@@ -143,6 +144,10 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
       name: user.name,
       email: user.email
     });
+
+    setTimeout(() => {
+      setIsRedirecting(true);
+    }, 1500);
 
     setTimeout(() => {
       onRegister(user);
@@ -163,17 +168,23 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }
       <div className="w-full max-w-md relative z-10 my-4">
         {showSuccess && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm rounded-3xl mx-2 sm:mx-0">
-            <div className="bg-gradient-to-br from-accent to-accent-hover rounded-2xl p-6 sm:p-8 text-center animate-scale-in border border-white/30 shadow-2xl max-w-sm mx-4">
-              <CheckCircle className="w-16 h-16 sm:w-20 sm:h-20 text-white mx-auto mb-3 sm:mb-4 animate-bounce" />
-              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">Cadastro Realizado!</h2>
+            <div className="bg-gradient-to-br from-accent to-accent-hover rounded-2xl p-5 sm:p-6 text-center animate-scale-in border border-white/30 shadow-2xl max-w-xs mx-4">
+              <CheckCircle className="w-14 h-14 sm:w-16 sm:h-16 text-white mx-auto mb-3 animate-bounce" />
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Sucesso!</h2>
 
-              <div className="bg-white/20 rounded-xl p-3 sm:p-4 mb-3">
-                <div className="text-white/90 text-sm mb-1">Seu bônus inicial:</div>
-                <div className="text-3xl sm:text-4xl font-bold text-white mb-1">R$ 14,70</div>
-                <div className="text-white/90 text-sm">3 Raspadinhas Grátis</div>
+              <div className="bg-white/20 rounded-lg p-2.5 sm:p-3 mb-2">
+                <div className="text-white/80 text-xs mb-0.5">Bônus inicial</div>
+                <div className="text-2xl sm:text-3xl font-bold text-white">R$ 14,70</div>
               </div>
 
-              <p className="text-white/90 text-sm">Redirecionando...</p>
+              {!isRedirecting ? (
+                <p className="text-white/80 text-xs flex items-center justify-center gap-2">
+                  <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Processando...
+                </p>
+              ) : (
+                <p className="text-white/80 text-xs">Preparando sua conta...</p>
+              )}
             </div>
           </div>
         )}
