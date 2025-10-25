@@ -81,7 +81,7 @@ export const MoneyPrizeModal: React.FC<MoneyPrizeModalProps> = ({ isOpen, amount
             </div>
             <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
               <div className="w-2 h-2 bg-accent rounded-full"></div>
-              <span>Próximo prêmio pode ser o Apple Watch!</span>
+              <span>A sorte está ao seu lado!</span>
             </div>
           </div>
 

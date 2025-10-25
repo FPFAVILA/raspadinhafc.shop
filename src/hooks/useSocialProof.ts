@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { SocialProofNotification } from '../types';
 
 const SOCIAL_PROOF_MESSAGES = [
-  { user: 'João S.', prize: 'R$ 30,00' },
-  { user: 'Ana P.', prize: 'um Apple Watch! 🎁' },
-  { user: 'Carlos M.', prize: 'R$ 30,00' },
-  { user: 'Maria L.', prize: 'o Apple Watch! 🏆' },
-  { user: 'Pedro K.', prize: 'R$ 30,00' },
-  { user: 'Julia R.', prize: 'um Apple Watch Series 9! ⌚' },
-  { user: 'Rafael T.', prize: 'algo especial! ✨' },
+  { user: 'João S.', prize: 'um prêmio incrível! 🎁' },
+  { user: 'Ana P.', prize: 'acabou de ganhar! ✨' },
+  { user: 'Carlos M.', prize: 'algo especial! 🏆' },
+  { user: 'Maria L.', prize: 'raspou 3 iguais! 🎉' },
+  { user: 'Pedro K.', prize: 'ganhou agora mesmo! 💰' },
+  { user: 'Julia R.', prize: 'um prêmio surpresa! ⭐' },
+  { user: 'Rafael T.', prize: 'teve muita sorte! 🍀' },
   { user: 'Camila B.', prize: 'acabou de raspar 3 iguais!' },
 ];
 

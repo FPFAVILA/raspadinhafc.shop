@@ -23,19 +23,7 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({ card, onComplete }) =>
   const [winningPattern, setWinningPattern] = useState<number[]>([]);
   const [canvasInitialized, setCanvasInitialized] = useState(false);
   const [showAllRevealed, setShowAllRevealed] = useState(false);
-  const [showLoseMessage, setShowLoseMessage] = useState(false);
-  const [loseMessage, setLoseMessage] = useState('');
   const [showResultDelay, setShowResultDelay] = useState(false);
-
-  const loseMessages = [
-    "Você quase conseguiu! Tente novamente!",
-    "Não foi dessa vez, continue tentando!",
-    "Que pena! Mas não desista, a sorte pode mudar!",
-    "Quase lá! A próxima pode ser a sua!",
-    "Não desanime! Continue raspando!",
-    "Tente mais uma vez, você está perto!",
-    "A sorte está chegando! Continue jogando!"
-  ];
 
   // Sair do modo fullscreen
   const exitFullscreen = useCallback(() => {
@@ -203,21 +191,12 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({ card, onComplete }) =>
   useEffect(() => {
     if (revealedBlocks.size === 9 && showResultDelay) {
       const updatedCard = { ...card, isCompleted: true };
-      
+
       if (!card.hasWon) {
-        // Mostrar mensagem de incentivo se não ganhou
-        const randomMessage = loseMessages[Math.floor(Math.random() * loseMessages.length)];
-        setLoseMessage(randomMessage);
-        setShowLoseMessage(true);
-        
         setTimeout(() => {
-          setShowLoseMessage(false);
-          setTimeout(() => {
-            onComplete(updatedCard);
-          }, 500);
-        }, 3000);
+          onComplete(updatedCard);
+        }, 800);
       } else {
-        // Delay adicional para vitória para apreciar a animação
         setTimeout(() => {
           onComplete(updatedCard);
         }, 2000);
@@ -372,20 +351,6 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({ card, onComplete }) =>
             </div>
           )}
 
-          {/* Mensagem de incentivo quando perde */}
-          {showLoseMessage && (
-            <div className="absolute inset-0 rounded-3xl bg-red-900/50 pointer-events-none">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-white rounded-2xl px-6 py-4 border-2 border-orange-400 shadow-2xl animate-bounce max-w-xs mx-4">
-                  <div className="text-center">
-                    <div className="text-3xl mb-2">😔</div>
-                    <p className="text-gray-800 font-bold text-base mb-1">{loseMessage}</p>
-                    <p className="text-gray-600 text-sm">Continue jogando para ganhar!</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
