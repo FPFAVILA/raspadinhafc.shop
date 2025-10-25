@@ -26,6 +26,7 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({ card, onComplete }) =>
   const [showResultDelay, setShowResultDelay] = useState(false);
   const [showLoseMessage, setShowLoseMessage] = useState(false);
   const [loseMessage, setLoseMessage] = useState('');
+  const [messageProcessed, setMessageProcessed] = useState(false);
 
   const loseMessages = [
     "Você quase conseguiu! Tente novamente!",
@@ -201,7 +202,8 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({ card, onComplete }) =>
 
   // Completar card quando todos os blocos estão revelados E após delay
   useEffect(() => {
-    if (revealedBlocks.size === 9 && showResultDelay) {
+    if (revealedBlocks.size === 9 && showResultDelay && !messageProcessed) {
+      setMessageProcessed(true);
       const updatedCard = { ...card, isCompleted: true };
 
       if (!card.hasWon) {
@@ -223,7 +225,7 @@ export const ScratchCard: React.FC<ScratchCardProps> = ({ card, onComplete }) =>
         }, 2000);
       }
     }
-  }, [revealedBlocks.size, showResultDelay, card, onComplete, loseMessages]);
+  }, [revealedBlocks.size, showResultDelay, messageProcessed, card, onComplete, loseMessages]);
 
   // Event handlers para touch
   const handleTouchStart = (e: React.TouchEvent) => {
