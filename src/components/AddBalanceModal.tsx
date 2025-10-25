@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Copy, QrCode, CreditCard, Smartphone, CheckCircle } from 'lucide-react';
 import { useFictionalPix } from '../hooks/useFictionalPix';
 import { QRCodeGenerator } from './QRCodeGenerator';
+import { trackPurchase } from '../utils/tracking';
 
 interface AddBalanceModalProps {
   isOpen: boolean;
@@ -44,6 +45,8 @@ export const AddBalanceModal: React.FC<AddBalanceModalProps> = ({
             clearInterval(paymentCheckInterval);
             setPaymentCheckInterval(null);
           }
+
+          trackPurchase(status.value, 'BRL');
 
           onAddBalance(status.value);
 

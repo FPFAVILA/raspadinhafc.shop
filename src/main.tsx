@@ -3,15 +3,17 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App.tsx';
 import './index.css';
-import { trackPageView } from './utils/tracking';
+import { initFacebookPixel, trackPageView } from './utils/tracking';
 
-// Utmify Pageview tracking wrapper
+const FACEBOOK_PIXEL_ID = '1309804263550614';
+
 const AppWithTracking = () => {
   useEffect(() => {
-    // Track pageview on initial load with a delay to ensure scripts are loaded
+    initFacebookPixel(FACEBOOK_PIXEL_ID);
+
     const timer = setTimeout(() => {
       trackPageView();
-    }, 1000);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, []);
